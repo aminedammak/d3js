@@ -47,11 +47,8 @@ const parseTime = d3.timeParse("%Y-%m-%d");
 const dateFormat = d3.timeFormat("%Y-%m-%d");
 
 const margin = { top: 20, right: 30, bottom: 30, left: 60 },
-  width =
-    document.getElementById("container").offsetWidth * 0.95 -
-    margin.left -
-    margin.right,
-  height = 400 - margin.top - margin.bottom;
+  width = 600;
+margin.left - margin.right, (height = 400 - margin.top - margin.bottom);
 
 const x = d3.scaleTime().range([0, width]);
 
@@ -75,8 +72,12 @@ const line = d3
 var map = {};
 let data = [
   { date: "2008-01-08", close: "5495.67", volume: "7641948" },
-  { date: "2008-01-09", close: "5435.42", volume: "8601614" },
-  { date: "2008-01-12", close: "5400.43", volume: "7106020" },
+  { date: "2008-01-09", close: "5535.42", volume: "8601614" },
+  { date: "2008-01-10", close: "5600.43", volume: "7106020" },
+  { date: "2008-01-11", close: "5700.43", volume: "7106030" },
+  { date: "2008-01-12", close: "5700.43", volume: "7106040" },
+  { date: "2008-01-13", close: "5500.43", volume: "7106010" },
+  { date: "2008-01-14", close: "5400.43", volume: "7106020" },
 ];
 
 // Conversion des données du fichier, parsing des dates et '+' pour expliciter une valeur numérique.
@@ -100,32 +101,17 @@ svg
   .call(d3.axisBottom(x));
 
 // Ajout de l'axe Y et du texte associé pour la légende
-svg
-  .append("g")
-  .call(d3.axisLeft(y))
-  .append("text")
-  .attr("fill", "#000")
-  .attr("transform", "rotate(-90)")
-  .attr("y", 6)
-  .attr("dy", "0.71em")
-  .style("text-anchor", "end")
-  .text("Pts");
-
-// Ajout de la grille horizontale (pour l'axe Y donc). Pour chaque tiret (ticks), on ajoute une ligne qui va
-// de la gauche à la droite du graphique et qui se situe à la bonne hauteur.
-svg
-  .selectAll("y axis")
-  .data(y.ticks(10))
-  .enter()
-  .append("line")
-  .attr("class", "horizontalGrid")
-  .attr("x1", 0)
-  .attr("x2", width)
-  .attr("y1", (d) => y(d))
-  .attr("y2", (d) => y(d));
+svg.append("g").call(d3.axisLeft(y));
 
 // Ajout d'un path calculé par la fonction line à partir des données de notre fichier.
-svg.append("path").datum(data).attr("class", "line").attr("d", line);
+svg
+  .append("path")
+  .datum(data)
+  .attr("class", "line")
+  .attr("d", line)
+  .attr("stroke", "#000")
+  .attr("stroke-width", 2)
+  .attr("fill", "none");
 
 // const xa = d3
 //   .scaleTime()
