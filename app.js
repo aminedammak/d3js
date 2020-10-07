@@ -31,30 +31,77 @@ const chartContainer = d3
 
 const chart = chartContainer.append("g");
 
+//x axis with countries name
 chart
   .append("g")
   .call(bottomAxis.tickSizeOuter(0))
   .attr("color", "#720570")
   .attr("transform", `translate(0, ${CHART_HEIGHT})`);
 
-chart
-  .selectAll(".bar")
-  .data(DUMMY_DATA, (data) => data)
-  .enter()
-  .append("rect")
-  .classed("bar", true)
-  .attr("width", xScale.bandwidth())
-  .attr("height", (data) => CHART_HEIGHT - yScale(data.value))
-  .attr("x", (data) => xScale(data.region))
-  .attr("y", (data) => yScale(data.value));
+let dataToRender = DUMMY_DATA;
 
-chart
-  .selectAll(".label")
-  .data(DUMMY_DATA)
+//bars
+const renderCharts = () => {
+  console.log("dataToRender", dataToRender);
+
+  chart
+    .selectAll(".bar")
+    .data(dataToRender, (data) => data.id)
+    .enter()
+    .append("rect")
+    .classed("bar", true)
+    .attr("width", xScale.bandwidth())
+    .attr("height", (data) => CHART_HEIGHT - yScale(data.value))
+    .attr("x", (data) => xScale(data.region))
+    .attr("y", (data) => yScale(data.value));
+
+  chart
+    .selectAll(".bar")
+    .data(dataToRender, (data) => data.id)
+    .exit()
+    .remove();
+
+  //values above bars
+  chart
+    .selectAll(".label")
+    .data(dataToRender, (data) => data.id)
+    .enter()
+    .append("text")
+    .classed("label", true)
+    .text((data) => data.value)
+    .attr("x", (data) => xScale(data.region) + xScale.bandwidth() / 2)
+    .attr("y", (data) => yScale(data.value) - 20)
+    .attr("text-anchor", "middle");
+
+  //handle remove values
+  chart
+    .selectAll(".label")
+    .data(dataToRender, (data) => data.id)
+    .exit()
+    .remove();
+};
+renderCharts();
+
+//checkboxes
+let unselectedItemsIds = [];
+
+const dataItems = d3.select("#data").select("ul").selectAll("li");
+
+dataItems
+  .data(dataToRender, (data) => data.id)
   .enter()
-  .append("text")
-  .classed("label", true)
-  .text((data) => data.value)
-  .attr("x", (data) => xScale(data.region) + xScale.bandwidth() / 2)
-  .attr("y", (data) => yScale(data.value) - 20)
-  .attr("text-anchor", "middle");
+  .append("li")
+  .append("input")
+  .attr("type", "checkbox")
+  .attr("checked", true)
+  .on("change", (data) => {
+    if (unselectedItemsIds.indexOf(data.id) === -1) {
+      unselectedItemsIds.push(data.id);
+    } else {
+      unselectedItemsIds = unselectedItemsIds.filter((id) => id !== data.id);
+    }
+    dataToRender = DUMMY_DATA.filter(
+      (data) => unselectedItemsIds.indexOf(data.id) === -1
+    );
+    renderCharts();
+  });

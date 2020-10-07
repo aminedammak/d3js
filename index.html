@@ -9,19 +9,22 @@
         border: 1px solid #720570;
       }
 
-      .bar {
-        fill: #720570;
-      }
-      .label {
-        fill: #720570;
+      .example {
+        width: 300px;
+        height: 300px;
       }
     </style>
     <script src="https://d3js.org/d3.v5.min.js" defer></script>
     <script src="https://d3js.org/d3-scale.v3.min.js" defer></script>
     <script src="https://d3js.org/d3-axis.v2.min.js" defer></script>
-    <script src="app.js" defer></script>
+    <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+
+    <!-- <script src="app.js" defer></script> -->
+    <script src="curve.js" defer></script>
   </head>
   <body>
-    <svg></svg>
+    <div id="container">
+      <div id="chart"></div>
+    </div>
   </body>
 </html>
